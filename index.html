@@ -517,6 +517,74 @@
   .form-input:focus, .form-textarea:focus { border-color: var(--gold); background: rgba(255,255,255,0.08); }
   .form-input::placeholder, .form-textarea::placeholder { color: rgba(245,240,232,0.25); }
   .form-textarea { height: 120px; resize: none; }
+
+  /* ── Contact Number: country code + phone input ── */
+  .phone-input-group { display: flex; gap: 10px; align-items: flex-start; }
+  .country-code-select { position: relative; flex-shrink: 0; }
+  .country-code-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--cream);
+    padding: 14px 12px;
+    border-radius: 2px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .country-code-btn:hover { border-color: rgba(255,255,255,0.25); }
+  .country-code-btn .caret { font-size: 0.65rem; opacity: 0.6; margin-left: 2px; }
+  .phone-number-input { flex: 1; min-width: 0; }
+
+  .country-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 280px;
+    max-width: 90vw;
+    background: var(--ink, #1a1614);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    z-index: 200;
+    overflow: hidden;
+  }
+  .country-dropdown.open { display: block; }
+  .country-search {
+    width: 100%;
+    box-sizing: border-box;
+    background: rgba(255,255,255,0.06);
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: var(--cream);
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    outline: none;
+  }
+  .country-list { max-height: 240px; overflow-y: auto; }
+  .country-list::-webkit-scrollbar { width: 5px; }
+  .country-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+  .country-option {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 14px;
+    font-size: 0.8rem;
+    color: var(--cream);
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .country-option:hover, .country-option.highlighted { background: rgba(255,255,255,0.08); }
+  .country-option .co-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .country-option .co-dial { opacity: 0.6; font-size: 0.75rem; }
+  .country-no-results { padding: 14px; text-align: center; font-size: 0.78rem; opacity: 0.5; }
+
+  @media (max-width: 479px) {
+    .country-dropdown { width: 250px; }
+    .country-code-btn { padding: 12px 10px; font-size: 0.78rem; }
+  }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .btn-submit { width: 100%; background: var(--rust); color: var(--white); border: none; padding: 16px; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: background 0.25s, transform 0.25s, box-shadow 0.25s; margin-top: 8px; }
   .btn-submit:hover { background: var(--gold); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(212,168,67,0.3); }
@@ -577,16 +645,203 @@
 
 
 
+  /* Whole-slide cinematic transition (the entire section moves as one block) */
+  .slide-section {
+    opacity: 0;
+    transform: translateY(60px) scale(0.97);
+    transition: opacity 1.1s cubic-bezier(0.16,1,0.3,1), transform 1.1s cubic-bezier(0.16,1,0.3,1);
+    will-change: opacity, transform;
+  }
+  .slide-section.visible { opacity: 1; transform: translateY(0) scale(1); }
+
   /* Scroll reveal */
-  .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1); }
+  .reveal { opacity: 0; transform: translateY(44px); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); will-change: opacity, transform; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
-  .reveal-left { opacity: 0; transform: translateX(-36px); transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1); }
+  .reveal-left { opacity: 0; transform: translateX(-44px); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); will-change: opacity, transform; }
   .reveal-left.visible { opacity: 1; transform: translateX(0); }
-  .reveal-scale { opacity: 0; transform: scale(0.94); transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1); }
+  .reveal-scale { opacity: 0; transform: scale(0.94); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); will-change: opacity, transform; }
   .reveal-scale.visible { opacity: 1; transform: scale(1); }
   .reveal-delay-1 { transition-delay: 0.1s; }
   .reveal-delay-2 { transition-delay: 0.2s; }
   .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* ── Reduced motion: respect user/OS accessibility preference ── */
+  @media (prefers-reduced-motion: reduce) {
+    .slide-section, .reveal, .reveal-left, .reveal-scale {
+      transition: opacity 0.3s ease !important;
+      transform: none !important;
+    }
+    .magic-particle { display: none !important; }
+  }
+
+  /* ── Tablet: slightly lighter motion ── */
+  @media (max-width: 1023px) {
+    .slide-section { transform: translateY(40px) scale(0.98); transition-duration: 0.85s; }
+    .reveal { transform: translateY(32px); transition-duration: 0.7s; }
+    .reveal-left { transform: translateX(-32px); transition-duration: 0.7s; }
+  }
+
+  /* ── Mobile: short, quick motion — big travel distances feel heavy on small screens ── */
+  @media (max-width: 767px) {
+    .slide-section { transform: translateY(26px) scale(0.99); transition-duration: 0.6s; }
+    .reveal { transform: translateY(20px); transition-duration: 0.5s; }
+    .reveal-left { transform: translateX(-20px); transition-duration: 0.5s; }
+    .reveal-scale { transform: scale(0.97); transition-duration: 0.5s; }
+  }
+
+  @media (max-width: 479px) {
+    .slide-section { transform: translateY(18px) scale(0.99); transition-duration: 0.45s; }
+    .reveal { transform: translateY(14px); transition-duration: 0.4s; }
+    .reveal-left { transform: translateX(-14px); transition-duration: 0.4s; }
+  }
+
+  /* Live IST clock — fixed bottom-right */
+  .ist-clock {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    z-index: 4500;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: rgba(245,240,232,0.92);
+    background: rgba(26,22,20,0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 14px;
+    border-radius: 30px;
+    border: 1px solid rgba(245,240,232,0.12);
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .ist-clock::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #6fcf6f;
+    margin-right: 7px;
+    box-shadow: 0 0 6px #6fcf6f;
+    vertical-align: middle;
+  }
+
+  @media (max-width: 767px) {
+    .ist-clock { font-size: 0.62rem; padding: 6px 11px; bottom: 12px; right: 12px; }
+  }
+  @media (max-width: 479px) {
+    .ist-clock { font-size: 0.56rem; padding: 5px 9px; bottom: 10px; right: 10px; }
+  }
+
+  /* ── Private Access: Pattern Lock ── */
+  .footer-logo { transition: none; }
+
+  .pattern-overlay {
+    position: fixed; inset: 0; z-index: 8000;
+    display: none;
+    align-items: center; justify-content: center;
+    background: rgba(10,8,7,0.0);
+    backdrop-filter: blur(0px);
+    transition: background 0.5s cubic-bezier(0.16,1,0.3,1), backdrop-filter 0.5s cubic-bezier(0.16,1,0.3,1);
+    padding: 20px;
+  }
+  .pattern-overlay.open {
+    display: flex;
+    background: rgba(10,8,7,0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .pattern-card {
+    background: var(--ink, #1a1614);
+    border: 1px solid rgba(245,240,232,0.12);
+    border-radius: 20px;
+    padding: 32px 28px 26px;
+    max-width: 340px;
+    width: 100%;
+    text-align: center;
+    color: var(--cream, #f5f0e8);
+    opacity: 0;
+    transform: scale(0.88) translateY(30px);
+    transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+  .pattern-overlay.open .pattern-card {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  .pattern-lock-icon { font-size: 2rem; margin-bottom: 6px; }
+  .pattern-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 4px; }
+  .pattern-sub { font-size: 0.82rem; opacity: 0.65; margin-bottom: 18px; transition: color 0.3s ease; }
+  .pattern-sub.error-text { color: #e57373; opacity: 1; }
+  .pattern-sub.success-text { color: #6fcf6f; opacity: 1; }
+
+  .pattern-wrap { position: relative; width: 240px; height: 240px; margin: 0 auto; touch-action: none; }
+  .pattern-lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .pattern-lines polyline { transition: stroke 0.2s ease; }
+  .pattern-grid { position: relative; width: 100%; height: 100%; }
+  .pattern-dot {
+    position: absolute;
+    width: 56px; height: 56px;
+    transform: translate(-50%, -50%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pattern-dot .dot-inner {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: rgba(245,240,232,0.3);
+    border: 2px solid rgba(245,240,232,0.4);
+    transition: all 0.15s ease;
+  }
+  .pattern-dot.active .dot-inner {
+    background: #c9603e;
+    border-color: #c9603e;
+    transform: scale(1.35);
+    box-shadow: 0 0 12px rgba(201,96,62,0.7);
+  }
+  .pattern-dot.error .dot-inner { background: #e57373; border-color: #e57373; box-shadow: 0 0 12px rgba(229,115,115,0.7); }
+  .pattern-dot.success .dot-inner { background: #6fcf6f; border-color: #6fcf6f; box-shadow: 0 0 12px rgba(111,207,111,0.7); }
+
+  @keyframes patternShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+  }
+  .pattern-wrap.shake { animation: patternShake 0.4s ease; }
+
+  .pattern-actions { margin-top: 18px; }
+  .pattern-btn-secondary {
+    background: transparent;
+    border: 1px solid rgba(245,240,232,0.25);
+    color: var(--cream, #f5f0e8);
+    padding: 9px 20px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .pattern-btn-secondary:hover { background: rgba(245,240,232,0.08); }
+
+  .drive-reveal { margin-top: 20px; opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .drive-reveal.show { opacity: 1; transform: translateY(0); }
+  .drive-unlocked { font-size: 0.95rem; margin-bottom: 12px; }
+  .drive-open-btn { display: inline-block; text-decoration: none; }
+  .drive-note { font-size: 0.7rem; opacity: 0.55; margin-top: 10px; line-height: 1.4; }
+
+  @media (max-width: 479px) {
+    .pattern-wrap { width: 210px; height: 210px; }
+    .pattern-dot[data-num="1"] { top: 35px; left: 35px; }
+    .pattern-dot[data-num="2"] { top: 35px; left: 105px; }
+    .pattern-dot[data-num="3"] { top: 35px; left: 175px; }
+    .pattern-dot[data-num="4"] { top: 105px; left: 35px; }
+    .pattern-dot[data-num="5"] { top: 105px; left: 105px; }
+    .pattern-dot[data-num="6"] { top: 105px; left: 175px; }
+    .pattern-dot[data-num="7"] { top: 175px; left: 35px; }
+    .pattern-dot[data-num="8"] { top: 175px; left: 105px; }
+    .pattern-dot[data-num="9"] { top: 175px; left: 175px; }
+  }
 
   /* Page Loader */
   .page-loader { position: fixed; inset: 0; background: var(--ink); z-index: 10000; display: flex; align-items: center; justify-content: center; animation: loaderOut 0.6s ease 0.8s forwards; pointer-events: none; }
@@ -1258,14 +1513,14 @@
 </section>
 
 <!-- ABOUT -->
-<section id="about">
+<section id="about" class="slide-section">
   <div class="about-text">
     <p class="section-label">About Me</p>
-    <h2 class="section-title">Building futures,<br>one project at a time.</h2>
+    <h2 class="section-title reveal">Building futures,<br>one project at a time.</h2>
     <p>I'm <strong>K.VN. Vijay</strong>, a Civil Engineering undergraduate from <strong>Seshadri Rao Gudlavalleru Engineering College</strong>, Andhra Pradesh. Rooted in Challapalli, Krishna District, I carry a deep passion for the built environment — from the structural to the aesthetic.</p>
     <p>My goal is to become a <strong>Planning Engineer</strong> — orchestrating complex projects through scheduling mastery, cost precision, and strategic foresight. Alongside, I pursue <strong>Interior Design</strong> as a personal creative avenue, bridging technical rigor with spatial artistry.</p>
     <p>I believe great construction is not just about materials and methods — it's about vision, coordination, and the courage to build something that lasts.</p>
-    <a href="mailto:kanagalavijay12345@gmail.com" class="btn-primary" style="margin-top: 16px;">Say Hello →</a>
+    <a href="mailto:kanagalavijaywork.co@gmail.com" class="btn-primary" style="margin-top: 16px;">Say Hello →</a>
   </div>
   <div class="about-edu">
     <p class="edu-title">Education</p>
@@ -1294,9 +1549,9 @@
 </section>
 
 <!-- SKILLS -->
-<section id="skills">
+<section id="skills" class="slide-section">
   <p class="section-label">Technical Arsenal</p>
-  <h2 class="section-title">Tools I wield<br>with confidence.</h2>
+  <h2 class="section-title reveal">Tools I wield<br>with confidence.</h2>
   <div class="skills-grid">
     <div class="skill-card reveal"><span class="skill-icon">📐</span><div class="skill-name">AutoCAD</div><div class="skill-category">Drafting & Design</div></div>
     <div class="skill-card reveal reveal-delay-1"><span class="skill-icon">🏗️</span><div class="skill-name">REVIT</div><div class="skill-category">BIM Modeling</div></div>
@@ -1310,9 +1565,9 @@
 </section>
 
 <!-- INTERESTS -->
-<section id="interests">
+<section id="interests" class="slide-section">
   <p class="section-label">Focus Areas</p>
-  <h2 class="section-title">What drives<br>my work.</h2>
+  <h2 class="section-title reveal">What drives<br>my work.</h2>
   <div class="interests-grid">
     <div class="interest-card reveal">
       <div class="interest-num">01</div>
@@ -1333,9 +1588,9 @@
 </section>
 
 <!-- WORK -->
-<section id="work">
+<section id="work" class="slide-section">
   <p class="section-label">Featured Project</p>
-  <h2 class="section-title">My work in the wild.</h2>
+  <h2 class="section-title reveal">My work in the wild.</h2>
   <div class="work-feature reveal">
     <div class="work-info">
       <div>
@@ -1356,9 +1611,9 @@
 </section>
 
 <!-- RESUME -->
-<section id="resume">
+<section id="resume" class="slide-section">
   <p class="section-label">Resume</p>
-  <h2 class="section-title">My credentials,<br>at a glance.</h2>
+  <h2 class="section-title reveal">My credentials,<br>at a glance.</h2>
   <div class="resume-layout">
     <div class="resume-info reveal-left">
       <h3>Ready to bring value from day one.</h3>
@@ -1396,9 +1651,9 @@
 </section>
 
 <!-- CERTIFICATIONS & WORKSHOPS -->
-<section id="certifications">
+<section id="certifications" class="slide-section">
   <p class="section-label">Credentials</p>
-  <h2 class="section-title">Certifications, Workshops<br>&amp; Events.</h2>
+  <h2 class="section-title reveal">Certifications, Workshops<br>&amp; Events.</h2>
   <div class="cert-grid">
 
     <!-- ── COLUMN 1: Certifications ── -->
@@ -1653,9 +1908,9 @@ document.addEventListener('keydown', function(e) {
 </script>
 
 <!-- CONTACT -->
-<section id="contact">
+<section id="contact" class="slide-section">
   <p class="section-label">Get In Touch</p>
-  <h2 class="section-title">Let's build<br>something together.</h2>
+  <h2 class="section-title reveal">Let's build<br>something together.</h2>
   <div class="contact-layout">
     <div class="contact-info">
       <p>Whether you have a project opportunity, a collaboration in mind, or simply want to connect — I'm always open to conversations that create. Reach out through any channel below or use the form.</p>
@@ -1664,17 +1919,10 @@ document.addEventListener('keydown', function(e) {
           <div class="contact-icon">✉️</div>
           <div>
             <div class="contact-detail-label">Email</div>
-            <a href="mailto:kanagalavijay12345@gmail.com" class="contact-detail-val">kanagalavijay12345@gmail.com</a>
+            <a href="mailto:kanagalavijaywork.co@gmail.com" class="contact-detail-val">kanagalavijaywork.co@gmail.com</a>
           </div>
         </div>
         <div class="contact-item reveal reveal-delay-1">
-          <div class="contact-icon">📞</div>
-          <div>
-            <div class="contact-detail-label">Phone</div>
-            <a href="tel:+918639778283" class="contact-detail-val">+91 86397 78283</a>
-          </div>
-        </div>
-        <div class="contact-item reveal reveal-delay-2">
           <div class="contact-icon">💼</div>
           <div>
             <div class="contact-detail-label">LinkedIn</div>
@@ -1694,7 +1942,7 @@ document.addEventListener('keydown', function(e) {
       <div id="formWrapper">
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label" for="fname">First Name</label>
+            <label class="form-label" for="fname">Name</label>
             <input class="form-input" type="text" id="fname" placeholder="Your name">
           </div>
           <div class="form-group">
@@ -1703,8 +1951,36 @@ document.addEventListener('keydown', function(e) {
           </div>
         </div>
         <div class="form-group">
+          <label class="form-label" for="fphoneNumber">Contact Number</label>
+          <div class="phone-input-group">
+            <div class="country-code-select" id="countryCodeSelect">
+              <button type="button" class="country-code-btn" id="countryCodeBtn" onclick="toggleCountryDropdown(event)">
+                <span id="selectedFlag">🇮🇳</span>
+                <span id="selectedCode">+91</span>
+                <span class="caret">▾</span>
+              </button>
+              <div class="country-dropdown" id="countryDropdown">
+                <input type="text" class="country-search" id="countrySearch" placeholder="Search country or code…" oninput="filterCountries()">
+                <div class="country-list" id="countryList"></div>
+              </div>
+            </div>
+            <input class="form-input phone-number-input" type="tel" id="fphoneNumber" placeholder="Phone number" inputmode="tel">
+          </div>
+        </div>
+        <div class="form-group">
           <label class="form-label" for="fsubject">Subject</label>
-          <input class="form-input" type="text" id="fsubject" placeholder="Project enquiry, collaboration...">
+          <select class="form-input" id="fsubject" onchange="document.getElementById('fsubjectOtherWrap').style.display = (this.value === 'Other') ? 'block' : 'none';">
+            <option value="Project Enquiry">Project Enquiry</option>
+            <option value="Job / Internship Opportunity">Job / Internship Opportunity</option>
+            <option value="Collaboration">Collaboration</option>
+            <option value="Freelance / Consulting Work">Freelance / Consulting Work</option>
+            <option value="General Contact">General Contact</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group" id="fsubjectOtherWrap" style="display:none;">
+          <label class="form-label" for="fsubjectOther">Please specify</label>
+          <input class="form-input" type="text" id="fsubjectOther" placeholder="Tell me the subject...">
         </div>
         <div class="form-group">
           <label class="form-label" for="fmessage">Message</label>
@@ -1721,15 +1997,54 @@ document.addEventListener('keydown', function(e) {
 </section>
 
 <footer>
-  <div class="footer-logo">K.VN.<span>VIJAY</span></div>
-  <span class="footer-copy">© 2025 K.VN.Vijay · Civil Engineer · Andhra Pradesh</span>
+  <div class="footer-logo" id="footerLogo" title="">K.VN.<span>VIJAY</span></div>
+  <span class="footer-copy">© 2026 K.VN.Vijay · Civil Engineer · Andhra Pradesh</span>
   <ul class="footer-links">
     <li><a href="https://tinyurl.com/ConstructionEdge" target="_blank">Work</a></li>
     <li><a href="#resume">Resume</a></li>
     <li><a href="https://www.linkedin.com/in/k-vn-vijay-6b0bb1244" target="_blank">LinkedIn</a></li>
-    <li><a href="mailto:kanagalavijay12345@gmail.com">Email</a></li>
+    <li><a href="mailto:kanagalavijaywork.co@gmail.com">Email</a></li>
+    <li><a href="tel:+918639778283">+91 86397 78283</a></li>
   </ul>
 </footer>
+
+<!-- Private access: pattern lock overlay -->
+<div class="pattern-overlay" id="patternOverlay">
+  <div class="pattern-card" id="patternCard">
+    <div class="pattern-lock-icon">🔒</div>
+    <h3 class="pattern-title">Private Access</h3>
+    <p class="pattern-sub" id="patternSub">Draw the pattern to continue</p>
+
+    <div class="pattern-wrap" id="patternWrap">
+      <svg class="pattern-lines" viewBox="0 0 240 240" id="patternLinesSvg">
+        <polyline id="patternPolyline" fill="none" stroke="#c9603e" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" points=""></polyline>
+      </svg>
+      <div class="pattern-grid" id="patternGrid">
+        <div class="pattern-dot" data-num="1" style="top:40px; left:40px;"><span class="dot-inner"></span></div>
+        <div class="pattern-dot" data-num="2" style="top:40px; left:120px;"><span class="dot-inner"></span></div>
+        <div class="pattern-dot" data-num="3" style="top:40px; left:200px;"><span class="dot-inner"></span></div>
+        <div class="pattern-dot" data-num="4" style="top:120px; left:40px;"><span class="dot-inner"></span></div>
+        <div class="pattern-dot" data-num="5" style="top:120px; left:120px;"><span class="dot-inner"></span></div>
+        <div class="pattern-dot" data-num="6" style="top:120px; left:200px;"><span class="dot-inner"></span></div>
+        <div class="pattern-dot" data-num="7" style="top:200px; left:40px;"><span class="dot-inner"></span></div>
+        <div class="pattern-dot" data-num="8" style="top:200px; left:120px;"><span class="dot-inner"></span></div>
+        <div class="pattern-dot" data-num="9" style="top:200px; left:200px;"><span class="dot-inner"></span></div>
+      </div>
+    </div>
+
+    <div class="pattern-actions">
+      <button class="pattern-btn-secondary" onclick="closePatternLock()">Cancel</button>
+    </div>
+
+    <div class="drive-reveal" id="driveReveal" style="display:none;">
+      <p class="drive-unlocked">✅ Unlocked</p>
+      <a href="https://drive.google.com/drive/folders/1RSB4O_2POErjX35F8rSb3_yN966DXVhU" target="_blank" rel="noopener" class="btn-primary drive-open-btn">Open Google Drive Folder →</a>
+      <p class="drive-note">This folder has its own separate password set directly in Google Drive.</p>
+    </div>
+  </div>
+</div>
+
+<div id="istClock" class="ist-clock" aria-hidden="true">Loading time…</div>
 
 <!-- ═══════════════════════════════════
      LOGIN OVERLAY
@@ -2501,7 +2816,241 @@ document.addEventListener('keydown', e => {
   let mx = 0, my = 0, rx = 0, ry = 0;
   let cursorVisible = false;
 
+const COUNTRIES = [{n:'India',d:'91',f:'🇮🇳'},{n:'Afghanistan',d:'93',f:'🇦🇫'},{n:'Albania',d:'355',f:'🇦🇱'},{n:'Algeria',d:'213',f:'🇩🇿'},{n:'American Samoa',d:'1684',f:'🇦🇸'},{n:'Andorra',d:'376',f:'🇦🇩'},{n:'Angola',d:'244',f:'🇦🇴'},{n:'Anguilla',d:'1264',f:'🇦🇮'},{n:'Antigua and Barbuda',d:'1268',f:'🇦🇬'},{n:'Argentina',d:'54',f:'🇦🇷'},{n:'Armenia',d:'374',f:'🇦🇲'},{n:'Aruba',d:'297',f:'🇦🇼'},{n:'Australia',d:'61',f:'🇦🇺'},{n:'Austria',d:'43',f:'🇦🇹'},{n:'Azerbaijan',d:'994',f:'🇦🇿'},{n:'Bahamas',d:'1242',f:'🇧🇸'},{n:'Bahrain',d:'973',f:'🇧🇭'},{n:'Bangladesh',d:'880',f:'🇧🇩'},{n:'Barbados',d:'1246',f:'🇧🇧'},{n:'Belarus',d:'375',f:'🇧🇾'},{n:'Belgium',d:'32',f:'🇧🇪'},{n:'Belize',d:'501',f:'🇧🇿'},{n:'Benin',d:'229',f:'🇧🇯'},{n:'Bermuda',d:'1441',f:'🇧🇲'},{n:'Bhutan',d:'975',f:'🇧🇹'},{n:'Bolivia, Plurinational State of',d:'591',f:'🇧🇴'},{n:'Bonaire, Sint Eustatius and Saba',d:'599',f:'🇧🇶'},{n:'Bosnia and Herzegovina',d:'387',f:'🇧🇦'},{n:'Botswana',d:'267',f:'🇧🇼'},{n:'Brazil',d:'55',f:'🇧🇷'},{n:'British Indian Ocean Territory',d:'246',f:'🇮🇴'},{n:'Brunei Darussalam',d:'673',f:'🇧🇳'},{n:'Bulgaria',d:'359',f:'🇧🇬'},{n:'Burkina Faso',d:'226',f:'🇧🇫'},{n:'Burundi',d:'257',f:'🇧🇮'},{n:'Cabo Verde',d:'238',f:'🇨🇻'},{n:'Cambodia',d:'855',f:'🇰🇭'},{n:'Cameroon',d:'237',f:'🇨🇲'},{n:'Canada',d:'1',f:'🇨🇦'},{n:'Cayman Islands',d:'1345',f:'🇰🇾'},{n:'Central African Republic',d:'236',f:'🇨🇫'},{n:'Chad',d:'235',f:'🇹🇩'},{n:'Chile',d:'56',f:'🇨🇱'},{n:'China',d:'86',f:'🇨🇳'},{n:'Christmas Island',d:'61',f:'🇨🇽'},{n:'Colombia',d:'57',f:'🇨🇴'},{n:'Comoros',d:'269',f:'🇰🇲'},{n:'Congo',d:'242',f:'🇨🇬'},{n:'Congo, The Democratic Republic of the',d:'243',f:'🇨🇩'},{n:'Cook Islands',d:'682',f:'🇨🇰'},{n:'Costa Rica',d:'506',f:'🇨🇷'},{n:'Croatia',d:'385',f:'🇭🇷'},{n:'Cuba',d:'53',f:'🇨🇺'},{n:'Curaçao',d:'599',f:'🇨🇼'},{n:'Cyprus',d:'357',f:'🇨🇾'},{n:'Czechia',d:'420',f:'🇨🇿'},{n:"Côte d\\'Ivoire",d:'225',f:'🇨🇮'},{n:'Denmark',d:'45',f:'🇩🇰'},{n:'Djibouti',d:'253',f:'🇩🇯'},{n:'Dominica',d:'1767',f:'🇩🇲'},{n:'Dominican Republic',d:'1809',f:'🇩🇴'},{n:'Ecuador',d:'593',f:'🇪🇨'},{n:'Egypt',d:'20',f:'🇪🇬'},{n:'El Salvador',d:'503',f:'🇸🇻'},{n:'Equatorial Guinea',d:'240',f:'🇬🇶'},{n:'Eritrea',d:'291',f:'🇪🇷'},{n:'Estonia',d:'372',f:'🇪🇪'},{n:'Eswatini',d:'268',f:'🇸🇿'},{n:'Ethiopia',d:'251',f:'🇪🇹'},{n:'Falkland Islands (Malvinas)',d:'500',f:'🇫🇰'},{n:'Faroe Islands',d:'298',f:'🇫🇴'},{n:'Fiji',d:'679',f:'🇫🇯'},{n:'Finland',d:'358',f:'🇫🇮'},{n:'France',d:'33',f:'🇫🇷'},{n:'French Guiana',d:'594',f:'🇬🇫'},{n:'French Polynesia',d:'689',f:'🇵🇫'},{n:'Gabon',d:'241',f:'🇬🇦'},{n:'Gambia',d:'220',f:'🇬🇲'},{n:'Georgia',d:'995',f:'🇬🇪'},{n:'Germany',d:'49',f:'🇩🇪'},{n:'Ghana',d:'233',f:'🇬🇭'},{n:'Gibraltar',d:'350',f:'🇬🇮'},{n:'Greece',d:'30',f:'🇬🇷'},{n:'Greenland',d:'299',f:'🇬🇱'},{n:'Grenada',d:'1473',f:'🇬🇩'},{n:'Guadeloupe',d:'590',f:'🇬🇵'},{n:'Guam',d:'1671',f:'🇬🇺'},{n:'Guatemala',d:'502',f:'🇬🇹'},{n:'Guernsey',d:'44',f:'🇬🇬'},{n:'Guinea',d:'224',f:'🇬🇳'},{n:'Guinea-Bissau',d:'245',f:'🇬🇼'},{n:'Guyana',d:'592',f:'🇬🇾'},{n:'Haiti',d:'509',f:'🇭🇹'},{n:'Holy See (Vatican City State)',d:'379',f:'🇻🇦'},{n:'Honduras',d:'504',f:'🇭🇳'},{n:'Hong Kong',d:'852',f:'🇭🇰'},{n:'Hungary',d:'36',f:'🇭🇺'},{n:'Iceland',d:'354',f:'🇮🇸'},{n:'Indonesia',d:'62',f:'🇮🇩'},{n:'Iran, Islamic Republic of',d:'98',f:'🇮🇷'},{n:'Iraq',d:'964',f:'🇮🇶'},{n:'Ireland',d:'353',f:'🇮🇪'},{n:'Isle of Man',d:'44',f:'🇮🇲'},{n:'Israel',d:'972',f:'🇮🇱'},{n:'Italy',d:'39',f:'🇮🇹'},{n:'Jamaica',d:'1876',f:'🇯🇲'},{n:'Japan',d:'81',f:'🇯🇵'},{n:'Jersey',d:'44',f:'🇯🇪'},{n:'Jordan',d:'962',f:'🇯🇴'},{n:'Kazakhstan',d:'7',f:'🇰🇿'},{n:'Kenya',d:'254',f:'🇰🇪'},{n:'Kiribati',d:'686',f:'🇰🇮'},{n:"Korea, Democratic People\\'s Republic of",d:'850',f:'🇰🇵'},{n:'Korea, Republic of',d:'82',f:'🇰🇷'},{n:'Kuwait',d:'965',f:'🇰🇼'},{n:'Kyrgyzstan',d:'996',f:'🇰🇬'},{n:"Lao People\\'s Democratic Republic",d:'856',f:'🇱🇦'},{n:'Latvia',d:'371',f:'🇱🇻'},{n:'Lebanon',d:'961',f:'🇱🇧'},{n:'Lesotho',d:'266',f:'🇱🇸'},{n:'Liberia',d:'231',f:'🇱🇷'},{n:'Libya',d:'218',f:'🇱🇾'},{n:'Liechtenstein',d:'423',f:'🇱🇮'},{n:'Lithuania',d:'370',f:'🇱🇹'},{n:'Luxembourg',d:'352',f:'🇱🇺'},{n:'Macao',d:'853',f:'🇲🇴'},{n:'Madagascar',d:'261',f:'🇲🇬'},{n:'Malawi',d:'265',f:'🇲🇼'},{n:'Malaysia',d:'60',f:'🇲🇾'},{n:'Maldives',d:'960',f:'🇲🇻'},{n:'Mali',d:'223',f:'🇲🇱'},{n:'Malta',d:'356',f:'🇲🇹'},{n:'Marshall Islands',d:'692',f:'🇲🇭'},{n:'Martinique',d:'596',f:'🇲🇶'},{n:'Mauritania',d:'222',f:'🇲🇷'},{n:'Mauritius',d:'230',f:'🇲🇺'},{n:'Mayotte',d:'262',f:'🇾🇹'},{n:'Mexico',d:'52',f:'🇲🇽'},{n:'Micronesia, Federated States of',d:'691',f:'🇫🇲'},{n:'Moldova, Republic of',d:'373',f:'🇲🇩'},{n:'Monaco',d:'377',f:'🇲🇨'},{n:'Mongolia',d:'976',f:'🇲🇳'},{n:'Montenegro',d:'382',f:'🇲🇪'},{n:'Montserrat',d:'1664',f:'🇲🇸'},{n:'Morocco',d:'212',f:'🇲🇦'},{n:'Mozambique',d:'258',f:'🇲🇿'},{n:'Myanmar',d:'95',f:'🇲🇲'},{n:'Namibia',d:'264',f:'🇳🇦'},{n:'Nauru',d:'674',f:'🇳🇷'},{n:'Nepal',d:'977',f:'🇳🇵'},{n:'Netherlands',d:'31',f:'🇳🇱'},{n:'New Caledonia',d:'687',f:'🇳🇨'},{n:'New Zealand',d:'64',f:'🇳🇿'},{n:'Nicaragua',d:'505',f:'🇳🇮'},{n:'Niger',d:'227',f:'🇳🇪'},{n:'Nigeria',d:'234',f:'🇳🇬'},{n:'Niue',d:'683',f:'🇳🇺'},{n:'Norfolk Island',d:'672',f:'🇳🇫'},{n:'North Macedonia',d:'389',f:'🇲🇰'},{n:'Northern Mariana Islands',d:'1670',f:'🇲🇵'},{n:'Norway',d:'47',f:'🇳🇴'},{n:'Oman',d:'968',f:'🇴🇲'},{n:'Pakistan',d:'92',f:'🇵🇰'},{n:'Palau',d:'680',f:'🇵🇼'},{n:'Palestine, State of',d:'970',f:'🇵🇸'},{n:'Panama',d:'507',f:'🇵🇦'},{n:'Papua New Guinea',d:'675',f:'🇵🇬'},{n:'Paraguay',d:'595',f:'🇵🇾'},{n:'Peru',d:'51',f:'🇵🇪'},{n:'Philippines',d:'63',f:'🇵🇭'},{n:'Poland',d:'48',f:'🇵🇱'},{n:'Portugal',d:'351',f:'🇵🇹'},{n:'Puerto Rico',d:'1787',f:'🇵🇷'},{n:'Qatar',d:'974',f:'🇶🇦'},{n:'Romania',d:'40',f:'🇷🇴'},{n:'Russian Federation',d:'7',f:'🇷🇺'},{n:'Rwanda',d:'250',f:'🇷🇼'},{n:'Réunion',d:'262',f:'🇷🇪'},{n:'Saint Barthélemy',d:'590',f:'🇧🇱'},{n:'Saint Helena, Ascension and Tristan da Cunha',d:'290',f:'🇸🇭'},{n:'Saint Kitts and Nevis',d:'1869',f:'🇰🇳'},{n:'Saint Lucia',d:'1758',f:'🇱🇨'},{n:'Saint Martin (French part)',d:'590',f:'🇲🇫'},{n:'Saint Pierre and Miquelon',d:'508',f:'🇵🇲'},{n:'Saint Vincent and the Grenadines',d:'1784',f:'🇻🇨'},{n:'Samoa',d:'685',f:'🇼🇸'},{n:'San Marino',d:'378',f:'🇸🇲'},{n:'Sao Tome and Principe',d:'239',f:'🇸🇹'},{n:'Saudi Arabia',d:'966',f:'🇸🇦'},{n:'Senegal',d:'221',f:'🇸🇳'},{n:'Serbia',d:'381',f:'🇷🇸'},{n:'Seychelles',d:'248',f:'🇸🇨'},{n:'Sierra Leone',d:'232',f:'🇸🇱'},{n:'Singapore',d:'65',f:'🇸🇬'},{n:'Sint Maarten (Dutch part)',d:'1721',f:'🇸🇽'},{n:'Slovakia',d:'421',f:'🇸🇰'},{n:'Slovenia',d:'386',f:'🇸🇮'},{n:'Solomon Islands',d:'677',f:'🇸🇧'},{n:'Somalia',d:'252',f:'🇸🇴'},{n:'South Africa',d:'27',f:'🇿🇦'},{n:'South Sudan',d:'211',f:'🇸🇸'},{n:'Spain',d:'34',f:'🇪🇸'},{n:'Sri Lanka',d:'94',f:'🇱🇰'},{n:'Sudan',d:'249',f:'🇸🇩'},{n:'Suriname',d:'597',f:'🇸🇷'},{n:'Sweden',d:'46',f:'🇸🇪'},{n:'Switzerland',d:'41',f:'🇨🇭'},{n:'Syrian Arab Republic',d:'963',f:'🇸🇾'},{n:'Taiwan, Province of China',d:'886',f:'🇹🇼'},{n:'Tajikistan',d:'992',f:'🇹🇯'},{n:'Tanzania, United Republic of',d:'255',f:'🇹🇿'},{n:'Thailand',d:'66',f:'🇹🇭'},{n:'Timor-Leste',d:'670',f:'🇹🇱'},{n:'Togo',d:'228',f:'🇹🇬'},{n:'Tokelau',d:'690',f:'🇹🇰'},{n:'Tonga',d:'676',f:'🇹🇴'},{n:'Trinidad and Tobago',d:'1868',f:'🇹🇹'},{n:'Tunisia',d:'216',f:'🇹🇳'},{n:'Turkmenistan',d:'993',f:'🇹🇲'},{n:'Turks and Caicos Islands',d:'1649',f:'🇹🇨'},{n:'Tuvalu',d:'688',f:'🇹🇻'},{n:'Türkiye',d:'90',f:'🇹🇷'},{n:'Uganda',d:'256',f:'🇺🇬'},{n:'Ukraine',d:'380',f:'🇺🇦'},{n:'United Arab Emirates',d:'971',f:'🇦🇪'},{n:'United Kingdom',d:'44',f:'🇬🇧'},{n:'United States',d:'1',f:'🇺🇸'},{n:'Uruguay',d:'598',f:'🇺🇾'},{n:'Uzbekistan',d:'998',f:'🇺🇿'},{n:'Vanuatu',d:'678',f:'🇻🇺'},{n:'Venezuela, Bolivarian Republic of',d:'58',f:'🇻🇪'},{n:'Viet Nam',d:'84',f:'🇻🇳'},{n:'Virgin Islands, British',d:'1284',f:'🇻🇬'},{n:'Virgin Islands, U.S.',d:'1340',f:'🇻🇮'},{n:'Wallis and Futuna',d:'681',f:'🇼🇫'},{n:'Yemen',d:'967',f:'🇾🇪'},{n:'Zambia',d:'260',f:'🇿🇲'},{n:'Zimbabwe',d:'263',f:'🇿🇼'},{n:'Åland Islands',d:'358',f:'🇦🇽'}];
+
+  // Country-code dropdown for Contact Number field
+  let selectedDial = '91';
+  function renderCountryList(filter) {
+    const listEl = document.getElementById('countryList');
+    const q = (filter || '').trim().toLowerCase();
+    const filtered = COUNTRIES.filter(c =>
+      c.n.toLowerCase().includes(q) || c.d.includes(q.replace('+',''))
+    );
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div class="country-no-results">No matches found</div>';
+      return;
+    }
+    listEl.innerHTML = filtered.map(c =>
+      `<div class="country-option" onclick="selectCountry('${c.d}','${c.f}')">` +
+        `<span>${c.f}</span><span class="co-name">${c.n}</span><span class="co-dial">+${c.d}</span>` +
+      `</div>`
+    ).join('');
+  }
+  function selectCountry(dial, flag) {
+    selectedDial = dial;
+    document.getElementById('selectedFlag').textContent = flag;
+    document.getElementById('selectedCode').textContent = '+' + dial;
+    closeCountryDropdown();
+  }
+  function filterCountries() {
+    renderCountryList(document.getElementById('countrySearch').value);
+  }
+  function toggleCountryDropdown(e) {
+    if (e) e.stopPropagation();
+    const dd = document.getElementById('countryDropdown');
+    const isOpen = dd.classList.contains('open');
+    if (isOpen) { closeCountryDropdown(); }
+    else {
+      renderCountryList('');
+      dd.classList.add('open');
+      setTimeout(() => document.getElementById('countrySearch').focus(), 50);
+    }
+  }
+  function closeCountryDropdown() {
+    document.getElementById('countryDropdown').classList.remove('open');
+    document.getElementById('countrySearch').value = '';
+  }
+  window.toggleCountryDropdown = toggleCountryDropdown;
+  window.selectCountry = selectCountry;
+  window.filterCountries = filterCountries;
+  document.addEventListener('click', (e) => {
+    const wrap = document.getElementById('countryCodeSelect');
+    if (wrap && !wrap.contains(e.target)) closeCountryDropdown();
+  });
+
+
   const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+  // Live IST (India/Kolkata) clock, updates every second
+  function updateISTClock() {
+    const el = document.getElementById('istClock');
+    if (!el) return;
+    const now = new Date();
+    const parts = new Intl.DateTimeFormat('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+    }).formatToParts(now);
+    const get = t => parts.find(p => p.type === t)?.value || '';
+    const dateStr = `${get('day')} ${get('month')} ${get('year')}`;
+    const timeStr = `${get('hour')}:${get('minute')}:${get('second')} ${get('dayPeriod')}`;
+    el.textContent = `${dateStr} · ${timeStr} IST`;
+  }
+  updateISTClock();
+  setInterval(updateISTClock, 1000);
+
+  // ── Private Access: Pattern Lock ──
+  const CORRECT_PATTERN = [7, 4, 5, 6, 9]; // order-sensitive secret sequence
+
+  const patternOverlay = document.getElementById('patternOverlay');
+  const patternWrap = document.getElementById('patternWrap');
+  const patternGrid = document.getElementById('patternGrid');
+  const patternSvg = document.getElementById('patternLinesSvg');
+  const patternPolyline = document.getElementById('patternPolyline');
+  const patternSub = document.getElementById('patternSub');
+  const driveReveal = document.getElementById('driveReveal');
+  const dots = Array.from(document.querySelectorAll('.pattern-dot'));
+
+  let selectedSeq = [];
+  let dragging = false;
+  let locked = false; // true once a correct pattern has been drawn this session
+  let failedAttempts = 0;
+  let lockedOut = false; // true after 2 failed attempts — stays locked until page refresh
+
+  function getLocalCenter(dotEl) {
+    const wrapRect = patternWrap.getBoundingClientRect();
+    const dotRect = dotEl.getBoundingClientRect();
+    return {
+      x: (dotRect.left + dotRect.width / 2) - wrapRect.left,
+      y: (dotRect.top + dotRect.height / 2) - wrapRect.top
+    };
+  }
+
+  function syncSvgViewBox() {
+    const w = patternWrap.clientWidth, h = patternWrap.clientHeight;
+    patternSvg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  }
+
+  function pointFromEvent(e) {
+    const wrapRect = patternWrap.getBoundingClientRect();
+    const cx = e.touches ? e.touches[0].clientX : e.clientX;
+    const cy = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: cx - wrapRect.left, y: cy - wrapRect.top };
+  }
+
+  function redrawLine(extraPoint) {
+    const pts = selectedSeq.map(num => {
+      const d = dots.find(x => +x.dataset.num === num);
+      const c = getLocalCenter(d);
+      return `${c.x},${c.y}`;
+    });
+    if (extraPoint) pts.push(`${extraPoint.x},${extraPoint.y}`);
+    patternPolyline.setAttribute('points', pts.join(' '));
+  }
+
+  function tryAddDot(clientPoint) {
+    for (const d of dots) {
+      const c = getLocalCenter(d);
+      const dist = Math.hypot(clientPoint.x - c.x, clientPoint.y - c.y);
+      if (dist < 26) {
+        const num = +d.dataset.num;
+        if (!selectedSeq.includes(num)) {
+          selectedSeq.push(num);
+          d.classList.add('active');
+        }
+      }
+    }
+  }
+
+  function resetPattern(delay = 0) {
+    setTimeout(() => {
+      selectedSeq = [];
+      dots.forEach(d => d.classList.remove('active', 'error', 'success'));
+      patternPolyline.setAttribute('points', '');
+      patternPolyline.setAttribute('stroke', '#c9603e');
+      patternSub.textContent = 'Draw the pattern to continue';
+      patternSub.className = 'pattern-sub';
+    }, delay);
+  }
+
+  function handleStart(e) {
+    if (locked) return;
+    e.preventDefault();
+    dragging = true;
+    resetPattern(0);
+    tryAddDot(pointFromEvent(e));
+    redrawLine();
+  }
+  function handleMove(e) {
+    if (!dragging || locked) return;
+    e.preventDefault();
+    const p = pointFromEvent(e);
+    tryAddDot(p);
+    redrawLine(p);
+  }
+  function handleEnd() {
+    if (!dragging || locked) return;
+    dragging = false;
+    redrawLine();
+    evaluatePattern();
+  }
+
+  function evaluatePattern() {
+    const isMatch = selectedSeq.length === CORRECT_PATTERN.length &&
+      selectedSeq.every((v, i) => v === CORRECT_PATTERN[i]);
+
+    if (isMatch) {
+      locked = true;
+      dots.forEach(d => { if (selectedSeq.includes(+d.dataset.num)) d.classList.add('success'); });
+      patternPolyline.setAttribute('stroke', '#6fcf6f');
+      patternSub.textContent = 'Access granted';
+      patternSub.className = 'pattern-sub success-text';
+      setTimeout(() => driveReveal.classList.add('show'), 200);
+      driveReveal.style.display = 'block';
+    } else if (selectedSeq.length > 0) {
+      failedAttempts++;
+      dots.forEach(d => { if (selectedSeq.includes(+d.dataset.num)) d.classList.add('error'); });
+      patternPolyline.setAttribute('stroke', '#e57373');
+      patternWrap.classList.add('shake');
+      setTimeout(() => patternWrap.classList.remove('shake'), 400);
+
+      if (failedAttempts >= 2) {
+        lockedOut = true;
+        patternSub.textContent = 'Too many incorrect attempts — locked';
+        patternSub.className = 'pattern-sub error-text';
+        setTimeout(() => closePatternLock(), 900);
+      } else {
+        patternSub.textContent = 'Incorrect pattern — try again';
+        patternSub.className = 'pattern-sub error-text';
+        resetPattern(650);
+      }
+    }
+  }
+
+  patternWrap.addEventListener('mousedown', handleStart);
+  patternWrap.addEventListener('mousemove', handleMove);
+  window.addEventListener('mouseup', handleEnd);
+  patternWrap.addEventListener('touchstart', handleStart, { passive: false });
+  patternWrap.addEventListener('touchmove', handleMove, { passive: false });
+  patternWrap.addEventListener('touchend', handleEnd);
+
+  function openPatternLock() {
+    if (lockedOut) return; // stays locked until page refresh, per the 2-attempt limit
+    locked = false;
+    driveReveal.classList.remove('show');
+    driveReveal.style.display = 'none';
+    resetPattern(0);
+    patternOverlay.classList.add('open');
+    syncSvgViewBox();
+  }
+  function closePatternLock() {
+    patternOverlay.classList.remove('open');
+    resetPattern(300);
+  }
+  window.closePatternLock = closePatternLock;
+
+  // Close on backdrop click (but not when clicking the card itself)
+  patternOverlay.addEventListener('click', e => { if (e.target === patternOverlay) closePatternLock(); });
+  window.addEventListener('resize', () => { if (patternOverlay.classList.contains('open')) syncSvgViewBox(); });
+
+  // Double-click / double-tap detection on the footer name
+  const footerLogo = document.getElementById('footerLogo');
+  let lastTap = 0;
+  footerLogo.addEventListener('click', () => {
+    const now = Date.now();
+    if (now - lastTap < 450) { openPatternLock(); lastTap = 0; }
+    else { lastTap = now; }
+  });
 
   function showCursor() {
     if (!cursorVisible) {
@@ -2560,11 +3109,40 @@ document.addEventListener('keydown', e => {
   const nav = document.getElementById('mainNav');
   window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 60); });
 
-  // Scroll reveal
+  // Whole-slide reveal — entire section moves in as one cinematic block
+  const slideSections = document.querySelectorAll('.slide-section');
+  const slideObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        slideObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -100px 0px' });
+  slideSections.forEach(el => slideObserver.observe(el));
+
+  // Scroll reveal — auto-staggers groups of cards/items as they enter view
   const allReveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-scale');
   const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-  }, { threshold: 0.12 });
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const el = e.target;
+        // Auto-stagger: if no manual delay class, calculate one from position among reveal siblings
+        const hasManualDelay = el.classList.contains('reveal-delay-1') || el.classList.contains('reveal-delay-2') || el.classList.contains('reveal-delay-3');
+        if (!hasManualDelay) {
+          const parent = el.parentElement;
+          const revealSiblings = Array.from(parent.children).filter(c =>
+            c.classList.contains('reveal') || c.classList.contains('reveal-left') || c.classList.contains('reveal-scale')
+          );
+          const idx = revealSiblings.indexOf(el);
+          const delayMs = Math.min(idx * 90, 360);
+          el.style.transitionDelay = delayMs + 'ms';
+        }
+        el.classList.add('visible');
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -70px 0px' });
   allReveals.forEach(el => observer.observe(el));
 
   // ═══ MAGIC ANIMATIONS ═══
@@ -2586,8 +3164,10 @@ document.addEventListener('keydown', e => {
     document.body.appendChild(p);
     setTimeout(() => p.remove(), 14000);
   }
-  setInterval(createParticle, 800);
-  for (let i = 0; i < 6; i++) setTimeout(createParticle, i * 200);
+  if (!isTouchDevice) {
+    setInterval(createParticle, 800);
+    for (let i = 0; i < 6; i++) setTimeout(createParticle, i * 200);
+  }
 
   // Animated counters on stats
   function animateCounter(el, target, suffix) {
@@ -2631,9 +3211,14 @@ document.addEventListener('keydown', e => {
   async function handleSubmit() {
     const name = document.getElementById('fname').value.trim();
     const email = document.getElementById('femail').value.trim();
-    const subject = document.getElementById('fsubject').value.trim();
+    const phoneNumber = document.getElementById('fphoneNumber').value.trim();
+    const fullPhone = phoneNumber ? ('+' + selectedDial + ' ' + phoneNumber) : '';
+    const subjectSelect = document.getElementById('fsubject').value;
+    const subjectOther = document.getElementById('fsubjectOther').value.trim();
+    const subject = (subjectSelect === 'Other' && subjectOther) ? subjectOther : subjectSelect;
     const message = document.getElementById('fmessage').value.trim();
     if (!name || !email || !message) { alert('Please fill in your name, email, and message.'); return; }
+    if (subjectSelect === 'Other' && !subjectOther) { alert('Please specify your subject.'); return; }
 
     const btn = document.querySelector('.btn-submit');
     btn.textContent = 'Sending…';
@@ -2644,15 +3229,17 @@ document.addEventListener('keydown', e => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
-          access_key: 'YOUR_WEB3FORMS_KEY',
-          name, email,
-          subject: subject || 'Portfolio Contact: ' + name,
-          message,
-          to: 'kanagalavijay12345@gmail.com'
+          access_key: '7d284abe-b414-40ba-8034-4ec1b41b5d8f',
+          name: name,
+          email: email,
+          phone: fullPhone,
+          subject: 'Portfolio Contact: ' + subject,
+          subject_type: subject,
+          message: message
         })
       });
       const data = await res.json();
-      if (data.success) {
+      if (res.ok && data.success) {
         document.getElementById('formWrapper').style.display = 'none';
         document.getElementById('formSuccess').style.display = 'block';
       } else {
@@ -2663,7 +3250,7 @@ document.addEventListener('keydown', e => {
     } catch(err) {
       btn.textContent = 'Send Message →';
       btn.disabled = false;
-      alert('Network error. Please email me at kanagalavijay12345@gmail.com');
+      alert('Network error. Please email me at kanagalavijaywork.co@gmail.com');
     }
   }
 
